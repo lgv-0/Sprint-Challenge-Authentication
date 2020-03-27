@@ -7,7 +7,7 @@ function GetUsers()
 
 function GetUser(username)
 {
-    return DB.select("*").from("users").where("username", username);
+    return DB.select("*").from("users").where("username", username).first();
 }
 
 function InsertUser(username, password)
