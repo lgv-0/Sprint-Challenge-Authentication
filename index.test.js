@@ -1,5 +1,6 @@
 const request = require('supertest');
 const server = require('./index.js');
+let dbhelper = require("./database/dbHelper");
 
 describe("Jokes Directory", ()=>
 {
@@ -27,10 +28,13 @@ describe("Authentication Directory", ()=>
             password:"testpass"
         };
     
+    let id = 0;
+    
     it("Registers users", async ()=>
     {
         let response = await request(server).post("/api/auth/register").send(User);
         expect(response.status).toEqual(200);
+        id = response.body[0];
     });
 
     it("Denies duplicate users", async ()=>
@@ -53,5 +57,13 @@ describe("Authentication Directory", ()=>
     {
         response = await request(server).get("/api/jokes").set({"Authorization":Token});
         expect(response.status).toEqual(200);
+    });
+
+    it("Deletes users (cleanup)", async ()=>
+    {
+        dbhelper.DeleteUser(id).then(()=>
+        {
+            
+        });
     });
 });
