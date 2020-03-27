@@ -24,12 +24,12 @@ router.post('/register', (req, res) =>
       DBHelper.InsertUser(req.body.username, hash).then((response)=>
       {
         res.status(200).send(response);
-      }).catch((error)=>
+      }).catch(()=>
       {
         res.status(500).send("Internal Server Error");
       });
     });
-  }).catch((error)=>
+  }).catch(()=>
   {
     res.status(500).send("Internal Server Error");
   });
@@ -58,7 +58,7 @@ router.post('/login', (req, res) =>
 
       res.status(200).send({msg:"Success", token:Token});
     });
-  }).catch((error)=>
+  }).catch(()=>
   {
     res.status(500).send("Internal Server Error");
   })

@@ -10,7 +10,6 @@ module.exports = (req, res, next) =>
       {
           if (!err)
           {
-              console.log(decodedToken);
               next();
           }
           else
