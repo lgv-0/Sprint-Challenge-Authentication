@@ -18,3 +18,40 @@ describe("Jokes Directory", ()=>
         expect(Array.isArray(response.body)).toBe(true);
     });
 });
+
+describe("Authentication Directory", ()=>
+{
+    let User =
+        {
+            username:"testuser",
+            password:"testpass"
+        };
+    
+    it("Registers users", async ()=>
+    {
+        let response = await request(server).post("/api/auth/register").send(User);
+        expect(response.status).toEqual(200);
+    });
+
+    it("Denies duplicate users", async ()=>
+    {
+        let response = await request(server).post("/api/auth/register").send(User);
+        expect(response.status).toEqual(300);
+    });
+
+    let Token = "";
+
+    it("Authenticates, returns token", async ()=>
+    {
+        let response = await request(server).post("/api/auth/login").send(User);
+        expect(response.status).toEqual(200);
+        expect(response.body).toEqual(expect.objectContaining({token: expect.anything()}));
+        Token = response.body.token;
+    });
+
+    it("Allows access with new token", async ()=>
+    {
+        response = await request(server).get("/api/jokes").set({"Authorization":Token});
+        expect(response.status).toEqual(200);
+    });
+});
