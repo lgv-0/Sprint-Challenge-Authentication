@@ -1,4 +1,4 @@
-let DB = require("knex")(require("./dbConfig"));
+let DB = require("./dbConfig");
 
 function GetUsers()
 {
