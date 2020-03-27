@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const bcryptjs = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 let DBHelper = require("../database/dbHelper");
 
 router.post('/register', (req, res) =>
@@ -36,7 +37,31 @@ router.post('/register', (req, res) =>
 
 router.post('/login', (req, res) =>
 {
-  
+  DBHelper.GetUser(req.body.username).then((response)=>
+  {
+    if (response === undefined)
+    {
+      res.status(401).send("Wrong username/password");
+      return;
+    }
+
+    bcryptjs.compare(req.body.password, response.password).then((response)=>
+    {
+      if (!response)
+      {
+        res.status(401).send("Wrong username/password");
+        return;
+      }
+
+      let Token = 
+        jwt.sign({username:response.username}, "secret", {expiresIn: "1h"});
+
+      res.status(200).send({msg:"Success", token:Token});
+    });
+  }).catch((error)=>
+  {
+    res.status(500).send("Internal Server Error");
+  })
 });
 
 module.exports = router;
